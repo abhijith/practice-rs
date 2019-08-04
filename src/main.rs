@@ -441,8 +441,8 @@ fn main() {
         a + b
     }
 
-    println!("{}", sum(1, 2));
-    println!("{}", sum(2, 2));
+    println!("sum {}", sum(1, 2));
+    println!("sum {}", sum(2, 2));
 
     fn inc(mut n: i32) -> i32 {
         n += 1;
@@ -458,7 +458,7 @@ fn main() {
     }
     let mut arr = [1, 2, 3, 4, 5];
     add1(&mut arr);
-    println!("{:?}", arr);
+    println!("mut arr: {:?}", arr);
 
     fn add1_with_arr_size(a: &mut [i32; 5]) {
         for i in 0..5 {
@@ -467,7 +467,7 @@ fn main() {
     }
 
     add1_with_arr_size(&mut arr);
-    println!("{:?}", arr);
+    println!("mut arr with size: {:?}", arr);
 
     let num = 10;
     let ref_num = &num;
@@ -484,15 +484,15 @@ fn main() {
 
     let a: i16 = fun::<i16>('a', 37, 41);
     let b: f64 = fun::<f64>('b', 37.2, 41.1);
-    println!("{} {}", a, b);
+    println!("generic {} {}", a, b);
 
     let a: i16 = fun('a', 37, 41);
     let b: f64 = fun('b', 37.2, 41.1);
-    println!("{} {}", a, b);
+    println!("generic {} {}", a, b);
 
     let a = fun('a', 37, 41);
     let b = fun('b', 37.2, 41.1);
-    println!("{} {}", a, b);
+    println!("generic {} {}", a, b);
 
     fn simple<S>(simp: S) -> S {
         simp
@@ -510,13 +510,13 @@ fn main() {
     }
 
     let t = Table { key: "a", id: 1 };
-    println!("{} -> {}", t.id, t.key);
+    println!("Table {} -> {}", t.id, t.key);
 
     let t = Table { key: 1, id: 1 };
-    println!("{} -> {}", t.id, t.key);
+    println!("Table {} -> {}", t.id, t.key);
 
     let t = Table { key: "asdf", id: 1 };
-    println!("{} -> {}", t.id, t.key);
+    println!("Table {} -> {}", t.id, t.key);
 
     let word = "yzxa";
     let mut chars: Vec<char> = word.chars().collect();
@@ -546,9 +546,10 @@ fn main() {
     let five = Some(5);
     let six = plus1(five);
     let none = plus1(None);
-    println!("{:?} {:?} {:?}", six, five, none);
+    println!("plus1: {:?} {:?} {:?}", six, five, none);
 
     // if let demonstration - common usage pattern
+
     let something = Some(1);
     match something {
         Some(x) => println!("{}", x),
@@ -556,7 +557,7 @@ fn main() {
     }
 
     if let Some(x) = Some(1) {
-        println!("{}", x);
+        println!("if let: {}", x);
     }
 
     let something_else = Some(1);
@@ -566,16 +567,16 @@ fn main() {
     }
 
     if let Some(x) = Some(1) {
-        println!("{}", x);
+        println!("if let: {}", x);
     } else {
-        println!("Gone!");
+        println!("if let: Gone!");
     }
 
     let v1: Vec<i32> = Vec::new();
 
     let v2 = vec![1, 2, 3];
 
-    println!("{:?} {:?}", v1, v2);
+    println!("vectors: {:?} {:?}", v1, v2);
 
     let mut v3 = Vec::new();
     v3.push(1);
@@ -628,13 +629,13 @@ fn main() {
     let mut m = HashMap::new();
     m.insert(String::from("a"), 1);
     m.insert(String::from("b"), 2);
-    println!("{:?}", m);
+    println!("hashmap: {:?}", m);
 
     let ks = vec![String::from("a"), String::from("b")];
     let vs = vec![1, 2];
 
     let m: HashMap<_, _> = ks.iter().zip(vs.iter()).collect();
-    println!("{:?}", m);
+    println!("hashmap: {:?}", m);
 
     let s = String::from("a");
     let k = m.get(&s);
