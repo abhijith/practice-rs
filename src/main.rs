@@ -3,6 +3,7 @@
 
 use std::collections::HashMap;
 use std::fs::File;
+use std::mem;
 
 #[derive(Debug)]
 struct Point<T> {
@@ -114,6 +115,18 @@ fn main() {
 
     #[allow(unused_variables)]
     let y: i32 = 42;
+
+    let w = 1;
+    let wbytes = mem::size_of_val(&w);
+    println!("\n{} bytes", wbytes);
+
+    let z: isize = 1; // size_t
+    let zbytes = mem::size_of_val(&z);
+    println!("\n{} bytes. {} bit os\n", zbytes, zbytes * 8);
+
+    let t: usize = 1;
+    let tbytes = mem::size_of_val(&t);
+    println!("\n{} bytes. {} bit os\n", tbytes, tbytes * 8);
 
     // ignore unused_variable by starting var with _
     let _truth: bool = false;
