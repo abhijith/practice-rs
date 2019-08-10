@@ -173,6 +173,10 @@ fn main() {
         println!("{}", x);
     }
 
+    for (i, x) in (1..4).enumerate() {
+        println!("{} -> {}", i, x);
+    }
+
     let mut i = 0;
 
     while i < 3 {
