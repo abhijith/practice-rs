@@ -330,6 +330,39 @@ fn main() {
         Uncertainty,
     };
 
+    enum Colour {
+        Red,
+        Green,
+        Blue,
+        GgbColour(u8, u8, u8),
+        CmykColour {
+            cyan: u8,
+            magenta: u8,
+            yellow: u8,
+            black: u8,
+        },
+    }
+
+    let colour = Colour::CmykColour {
+        cyan: 0,
+        magenta: 0,
+        yellow: 0,
+        black: 255,
+    };
+
+    match colour {
+        Colour::Red => println!("Colour: red"),
+        Colour::Blue => println!("Colour: blue"),
+        Colour::Green => println!("Colour: green"),
+        Colour::GgbColour(r, g, b) => println!("Colour: r {} g {} b {}", r, g, b),
+        Colour::CmykColour {
+            cyan: c,
+            magenta: _,
+            yellow: _,
+            black: b,
+        } => println!("Colour: c {} b {} ", c, b),
+    }
+
     // let outcome = Result::Success(23.67);
     let outcome = Result::Failure(1200, 'X');
 
