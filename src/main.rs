@@ -105,6 +105,13 @@ fn panik() -> () {
     };
 }
 
+const ANSWER_TO_LIFE: u32 = 42;
+// immutable
+static MONTHS: u32 = 12; // fixed address
+
+// mutable static - needs to be enclosed with unsafe block when using it
+static mut GLOBAL_STATIC_MUT: u8 = 2; // fixed address
+
 fn main() {
     println!("hello world!");
     let foo = format!("hello rustacean!");
@@ -427,7 +434,17 @@ fn main() {
     println!("{:?} {:?}", black, origin);
 
     #[allow(dead_code)]
-    const MAX_LIMIT: u16 = 10;
+    const MAX_LIMIT: u16 = 10; // type is mandatory. Has no fixed address
+
+    println!(
+        "answer to life: {} number of months {}",
+        ANSWER_TO_LIFE, MONTHS
+    );
+
+    unsafe {
+        GLOBAL_STATIC_MUT = 0;
+        println!("global static mutable {}", GLOBAL_STATIC_MUT);
+    }
 
     // return type is ()
     // equivalent to fn cool() -> () { ... }
