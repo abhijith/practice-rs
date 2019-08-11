@@ -769,4 +769,23 @@ fn main() {
     println!("{:?}", m);
 
     sample();
+
+    slices();
+}
+
+fn slices() {
+    let d1 = [1, 2, 3, 4, 5];
+    use_slice(&d1[1..4]);
+
+    let mut d2 = [1, 2, 3, 4, 5];
+    mut_slice(&mut d2[1..3]);
+}
+
+fn use_slice(slice: &[i32]) {
+    println!("0th: {} len {}", slice[0], slice.len());
+}
+
+fn mut_slice(slice: &mut [i32]) {
+    slice[0] = 99;
+    println!("0th: {}", slice[0]);
 }
