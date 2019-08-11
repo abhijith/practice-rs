@@ -349,6 +349,7 @@ fn main() {
         Uncertainty,
     };
 
+    // tuple and struct enum
     enum Colour {
         Red,
         Green,
