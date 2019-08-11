@@ -267,7 +267,9 @@ fn main() {
     let mut v: Vec<&str> = vec!["this", "is"];
     v.push("cool!");
     println!("{:?}", v);
-    v.pop();
+    if let Some(x) = v.pop() {
+        println!("popped {}", x);
+    }
     println!("{:?}", v);
     v.insert(2, "rad");
     v.insert(0, "awesome");
@@ -672,8 +674,12 @@ fn main() {
     let v1: Vec<i32> = Vec::new();
 
     let v2 = vec![1, 2, 3];
-
     println!("vectors: {:?} {:?}", v1, v2);
+
+    let mut v3 = vec![1, 2, 3]; // has to be mutable to pop
+    while let Some(x) = v3.pop() {
+        println!("popped {}", x);
+    }
 
     let mut v3 = Vec::new();
     v3.push(1);
@@ -683,8 +689,14 @@ fn main() {
 
     let v4 = vec![1, 2, 3, 4, 5];
     let third = &v4[2];
-    let t = v4.get(2);
+    let t = v4.get(2); // returns option type
     println!("{:?} {:?} {:?}", third, t, v4.get(10));
+
+    if let Some(x) = v4.get(10) {
+        println!("within bound");
+    } else {
+        println!("out of bound");
+    }
 
     let v = vec![1, 2, 3, 4, 5];
 
