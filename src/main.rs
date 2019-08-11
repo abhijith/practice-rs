@@ -771,6 +771,39 @@ fn main() {
     sample();
 
     slices();
+
+    // 'as' example
+    {
+        // utf-8
+        let s: &'static str = "hello there";
+        for c in s.chars() {
+            println!("char: {}", c);
+        }
+
+        let idx = 0;
+        if let Some(c) = s.chars().nth(idx) {
+            println!("idx {} char {}", idx, c);
+        } else {
+            println!("Out of bound idx {} ", idx);
+        }
+
+        let mut alphas = String::new();
+        let mut a = 'a' as u8;
+        while a <= ('z' as u8) {
+            alphas.push(a as char);
+            alphas.push_str(" ");
+            print!("{} ", a as char);
+            a += 1;
+        }
+        println!("\n{}\n", alphas);
+
+        // &str <> String
+        let u: &str = &alphas;
+        println!("{}", u);
+
+        let z = alphas + " DONE";
+        println!("{}", z);
+    }
 }
 
 fn slices() {
