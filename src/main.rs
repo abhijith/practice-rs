@@ -245,6 +245,23 @@ fn main() {
     let arr = [[0; 5]; 5];
     println!("{:?}", arr);
 
+    let one_dim_arr: [i32; 5] = [1, 2, 3, 4, 5];
+    println!("{:?}", one_dim_arr);
+
+    let inited_arr = [0; 5];
+    println!("{:?}", inited_arr);
+
+    // can't compare `[{integer}; 5]` with `[{integer}; 2]`
+    // if inited_arr == [1, 2] {
+    //     println!("matched");
+    // }
+
+    let uninited_arr: [u16; 5];
+    // println!("{:?}", uninited_arr); // uninitialized variable
+
+    let two_dim_arr: [[i32; 3]; 3] = [[1, 2, 3], [1, 2, 3], [1, 2, 3]];
+    println!("{:?}", two_dim_arr);
+
     // vectors are dynamic arrays
 
     let mut v: Vec<&str> = vec!["this", "is"];
@@ -401,6 +418,19 @@ fn main() {
         email: String,
         age: u8,
         active: bool,
+    }
+
+    union IntOrFloat {
+        i: i32,
+        f: f32,
+    }
+
+    let mut iorf = IntOrFloat { i: 123 };
+    iorf.i = 234;
+    // type is indeterministic since it can be either int or float.
+    // needs an unsafe block
+    unsafe {
+        println!("irof {}", iorf.i);
     }
 
     fn _creat_user(name: String, age: u8, email: String) -> User {
