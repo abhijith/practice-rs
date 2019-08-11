@@ -776,7 +776,7 @@ fn main() {
     // 'as' example
     {
         // utf-8
-        let s: &'static str = "hello there";
+        let s: &str = "hello there";
         for c in s.chars() {
             println!("char: {}", c);
         }
@@ -805,6 +805,19 @@ fn main() {
         let z = alphas + " DONE";
         println!("{}", z);
     }
+
+    // pattern matching
+    fn pm(v: i32) {
+        match v {
+            0 => println!("zero"),
+            1...10 => println!("single digit"),
+            13 | 666 => println!("number of the beast"),
+            _ => println!("say what?"),
+        }
+    }
+    pm(0);
+    pm(13);
+    pm(666);
 }
 
 fn slices() {
