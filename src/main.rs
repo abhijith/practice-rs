@@ -810,12 +810,13 @@ fn main() {
     fn pm(v: i32) {
         match v {
             0 => println!("zero"),
-            1...10 => println!("single digit"),
+            ranger @ 1...9 => println!("single digit in range: {}", ranger),
             13 | 666 => println!("number of the beast"),
             _ => println!("say what?"),
         }
     }
     pm(0);
+    pm(5);
     pm(13);
     pm(666);
 }
