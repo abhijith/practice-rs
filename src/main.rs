@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::mem;
 
+// generic type
 #[derive(Debug)]
 struct Point<T> {
     x: T,
@@ -819,6 +820,16 @@ fn main() {
     pm(5);
     pm(13);
     pm(666);
+
+    let sq = |x: i32| -> i32 { x * x };
+    let square = |x| x * x;
+
+    println!("{} {}", sq(4), square(10));
+    println!("{}", addn(12)(1));
+}
+
+fn addn(n: i32) -> impl Fn(i32) -> i32 {
+    move |x| n + x
 }
 
 fn slices() {
