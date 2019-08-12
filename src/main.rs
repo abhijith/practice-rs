@@ -824,8 +824,16 @@ fn main() {
     let sq = |x: i32| -> i32 { x * x };
     let square = |x| x * x;
 
+    // closure and higher order fn
     println!("{} {}", sq(4), square(10));
-    println!("{}", addn(12)(1));
+    println!("addn: {}", addn(12)(1));
+
+    let sum_of_sqs = (0..)
+        .map(|x| x * x)
+        .take_while(|&y| y < 100)
+        .filter(|&z| z % 2 == 0)
+        .fold(0, |sum, acc| sum + acc);
+    println!("sum of even squares: {}", sum_of_sqs);
 }
 
 fn addn(n: i32) -> impl Fn(i32) -> i32 {
