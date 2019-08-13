@@ -424,6 +424,12 @@ fn main() {
         active: bool,
     }
 
+    impl User {
+        fn nick(&self) {
+            println!("nick method on type User {:?}", self.name);
+        }
+    }
+
     union IntOrFloat {
         i: i32,
         f: f32,
@@ -470,6 +476,7 @@ fn main() {
         ..u1
     };
 
+    u1.nick();
     println!("{:?} {:?}", u1, u2);
 
     // Tuple structs are useful when you want to give the whole tuple
