@@ -847,6 +847,8 @@ fn main() {
 
     let uber: Human = Animal::create("uber mensch!");
     println!("{}", uber.name());
+
+    println!("summable sum: {}", vec![1, 2, 3, 4].sum());
 }
 
 trait Animal {
@@ -886,6 +888,16 @@ impl Animal for Cat {
 
     fn name(&self) -> &'static str {
         self.name
+    }
+}
+
+trait Summable<T> {
+    fn sum(&self) -> T;
+}
+
+impl Summable<i32> for Vec<i32> {
+    fn sum(&self) -> i32 {
+        self.iter().fold(0, |x, acc| acc + x)
     }
 }
 
