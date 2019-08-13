@@ -834,6 +834,59 @@ fn main() {
         .filter(|&z| z % 2 == 0)
         .fold(0, |sum, acc| sum + acc);
     println!("sum of even squares: {}", sum_of_sqs);
+
+    println!("---- traits ----");
+    let john = Human { name: "john doe" };
+    john.talk();
+    let garfield = Cat { name: "Garfield" };
+    garfield.talk();
+    println!("{} {}", john.name(), garfield.name());
+    let h = Human::create("newton");
+    let c = Cat::create("Garfield");
+    println!("{:?} {:?}", h.name(), c.name());
+
+    let uber: Human = Animal::create("uber mensch!");
+    println!("{}", uber.name());
+}
+
+trait Animal {
+    fn create(name: &'static str) -> Self;
+    fn name(&self) -> &'static str;
+    fn talk(&self) {
+        println!("{} cannot talk", self.name());
+    }
+}
+
+#[derive(Debug)]
+struct Human {
+    name: &'static str,
+}
+
+#[derive(Debug)]
+struct Cat {
+    name: &'static str,
+}
+
+impl Animal for Human {
+    fn create(name: &'static str) -> Human {
+        Human { name: name }
+    }
+    fn name(&self) -> &'static str {
+        self.name
+    }
+    fn talk(&self) {
+        println!("{} says hello!", self.name);
+    }
+}
+
+impl Animal for Cat {
+    fn create(name: &'static str) -> Cat {
+        Cat { name: name }
+    }
+
+    fn name(&self) -> &'static str {
+        self.name
+    }
 }
 
 fn addn(n: i32) -> impl Fn(i32) -> i32 {
