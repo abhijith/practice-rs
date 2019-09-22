@@ -114,6 +114,11 @@ static MONTHS: u32 = 12; // fixed address
 static mut GLOBAL_STATIC_MUT: u8 = 2; // fixed address
 
 fn main() {
+    let s = String::from("book");
+
+    let ss = pluralize(s.as_str());
+    println!("singular: {}, plural: {}", s, ss);
+
     println!("hello world!");
     let foo = format!("hello rustacean!");
     println!("{}", foo);
@@ -511,6 +516,21 @@ fn main() {
 
     println!("{:?} {:?}", black, origin);
 
+    // one of the use cases for tuple struct: "new type pattern"
+    // like typedef but with type checking
+    #[derive(Debug)]
+    struct Meter(u8);
+
+    fn print_meters(m: Meter) {
+        println!("meters: {:?}", m);
+    }
+
+    let d1: Meter = Meter(10);
+    // let d2: u8 = 10;
+    print_meters(d1);
+    // does not compile
+    // print_meters(d2);
+
     #[allow(dead_code)]
     const MAX_LIMIT: u16 = 10; // type is mandatory. Has no fixed address
 
@@ -818,7 +838,7 @@ fn main() {
     fn pm(v: i32) {
         match v {
             0 => println!("zero"),
-            ranger @ 1...9 => println!("single digit in range: {}", ranger),
+            ranger @ 1..=9 => println!("single digit in range: {}", ranger),
             13 | 666 => println!("number of the beast"),
             _ => println!("say what?"),
         }
@@ -856,10 +876,31 @@ fn main() {
     println!("{}", uber.name());
 
     println!("summable sum: {}", vec![1, 2, 3, 4].sum());
+
+    // example of enums made of other types
+    enum Creature {
+        Human(Human),
+        Cat(Cat),
+    }
+
+    let person = Person {
+        name: String::from("buddha"),
+    };
+    person.talk();
+}
+
+struct Person {
+    name: String,
+}
+
+impl Person {
+    fn talk(&self) {
+        println!("hello {}", self.name);
+    }
 }
 
 trait Animal {
-    fn create(name: &'static str) -> Self;
+    fn create(name: &'static str) -> Self; // associated fn does not take a self since it is not called on instance.
     fn name(&self) -> &'static str;
     fn talk(&self) {
         println!("{} cannot talk", self.name());
@@ -927,4 +968,10 @@ fn use_slice(slice: &[i32]) {
 fn mut_slice(slice: &mut [i32]) {
     slice[0] = 99;
     println!("0th: {}", slice[0]);
+}
+
+fn pluralize(s: &str) -> String {
+    let mut ss = String::from(s);
+    ss.push_str("s");
+    String::from(ss)
 }
