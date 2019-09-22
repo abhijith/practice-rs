@@ -971,7 +971,7 @@ fn mut_slice(slice: &mut [i32]) {
 }
 
 fn pluralize(s: &str) -> String {
-    let mut ss = String::from(s);
+    let mut ss = String::from(s); // or let mut ss = s.to_owned(); // creates String
     ss.push_str("s");
-    String::from(ss)
+    ss
 }
