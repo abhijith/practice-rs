@@ -117,7 +117,8 @@ fn main() {
     let s = String::from("book");
 
     let ss = pluralize(s.as_str());
-    println!("singular: {}, plural: {}", s, ss);
+    let sss = pluralize(&s); // Deref trait and Deref coercion
+    println!("singular: {}, plural: {} plural: {}", s, ss, sss);
 
     println!("hello world!");
     let foo = format!("hello rustacean!");
@@ -184,7 +185,6 @@ fn main() {
     }
 
     let mut i = 0;
-
     while i < 3 {
         println!("while {}", i);
         i += 1
