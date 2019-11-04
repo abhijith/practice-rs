@@ -113,6 +113,93 @@ static MONTHS: u32 = 12; // fixed address
 // mutable static - needs to be enclosed with unsafe block when using it
 static mut GLOBAL_STATIC_MUT: u8 = 2; // fixed address
 
+struct Person {
+    name: String,
+}
+
+impl Person {
+    fn talk(&self) {
+        println!("hello {}", self.name);
+    }
+}
+
+trait Animal {
+    fn create(name: &'static str) -> Self; // associated fn does not take a self since it is not called on instance.
+    fn name(&self) -> &'static str;
+    fn talk(&self) {
+        println!("{} cannot talk", self.name());
+    }
+}
+
+#[derive(Debug)]
+struct Human {
+    name: &'static str,
+}
+
+#[derive(Debug)]
+struct Cat {
+    name: &'static str,
+}
+
+impl Animal for Human {
+    fn create(name: &'static str) -> Human {
+        Human { name: name }
+    }
+    fn name(&self) -> &'static str {
+        self.name
+    }
+    fn talk(&self) {
+        println!("{} says hello!", self.name);
+    }
+}
+
+impl Animal for Cat {
+    fn create(name: &'static str) -> Cat {
+        Cat { name: name }
+    }
+
+    fn name(&self) -> &'static str {
+        self.name
+    }
+}
+
+trait Summable<T> {
+    fn sum(&self) -> T;
+}
+
+impl Summable<i32> for Vec<i32> {
+    fn sum(&self) -> i32 {
+        self.iter().fold(0, |acc, x| x + acc)
+    }
+}
+
+fn addn(n: i32) -> impl Fn(i32) -> i32 {
+    move |x| n + x
+}
+
+fn slices() {
+    let d1 = [1, 2, 3, 4, 5];
+    use_slice(&d1[1..4]);
+
+    let mut d2 = [1, 2, 3, 4, 5];
+    mut_slice(&mut d2[1..3]);
+}
+
+fn use_slice(slice: &[i32]) {
+    println!("0th: {} len {}", slice[0], slice.len());
+}
+
+fn mut_slice(slice: &mut [i32]) {
+    slice[0] = 99;
+    println!("0th: {}", slice[0]);
+}
+
+fn pluralize(s: &str) -> String {
+    let mut ss = String::from(s); // or let mut ss = s.to_owned(); // creates String
+    ss.push_str("s");
+    ss
+}
+
 fn main() {
     let s = String::from("book");
 
@@ -759,10 +846,10 @@ fn main() {
     // let h = s1[0];
     let _len = String::from("Hola").len();
 
-    // #![allow(unused_variables)]
-    // for c in "      ".chars() {
-    //     println!("{}", c);
-    // }
+    #[allow(unused_variables)]
+    for c in "      ".chars() {
+        println!("{}", c);
+    }
 
     let mut m = HashMap::new();
     m.insert(String::from("a"), 1);
@@ -859,7 +946,10 @@ fn main() {
         .map(|x| x * x)
         .take_while(|&y| y < 100)
         .filter(|&z| z % 2 == 0)
-        .fold(0, |sum, acc| sum + acc);
+        .fold(0, |acc, x| {
+            println!("acc: {} x: {}", acc, x);
+            acc + x
+        });
     println!("sum of even squares: {}", sum_of_sqs);
 
     println!("---- traits ----");
@@ -887,91 +977,4 @@ fn main() {
         name: String::from("buddha"),
     };
     person.talk();
-}
-
-struct Person {
-    name: String,
-}
-
-impl Person {
-    fn talk(&self) {
-        println!("hello {}", self.name);
-    }
-}
-
-trait Animal {
-    fn create(name: &'static str) -> Self; // associated fn does not take a self since it is not called on instance.
-    fn name(&self) -> &'static str;
-    fn talk(&self) {
-        println!("{} cannot talk", self.name());
-    }
-}
-
-#[derive(Debug)]
-struct Human {
-    name: &'static str,
-}
-
-#[derive(Debug)]
-struct Cat {
-    name: &'static str,
-}
-
-impl Animal for Human {
-    fn create(name: &'static str) -> Human {
-        Human { name: name }
-    }
-    fn name(&self) -> &'static str {
-        self.name
-    }
-    fn talk(&self) {
-        println!("{} says hello!", self.name);
-    }
-}
-
-impl Animal for Cat {
-    fn create(name: &'static str) -> Cat {
-        Cat { name: name }
-    }
-
-    fn name(&self) -> &'static str {
-        self.name
-    }
-}
-
-trait Summable<T> {
-    fn sum(&self) -> T;
-}
-
-impl Summable<i32> for Vec<i32> {
-    fn sum(&self) -> i32 {
-        self.iter().fold(0, |x, acc| acc + x)
-    }
-}
-
-fn addn(n: i32) -> impl Fn(i32) -> i32 {
-    move |x| n + x
-}
-
-fn slices() {
-    let d1 = [1, 2, 3, 4, 5];
-    use_slice(&d1[1..4]);
-
-    let mut d2 = [1, 2, 3, 4, 5];
-    mut_slice(&mut d2[1..3]);
-}
-
-fn use_slice(slice: &[i32]) {
-    println!("0th: {} len {}", slice[0], slice.len());
-}
-
-fn mut_slice(slice: &mut [i32]) {
-    slice[0] = 99;
-    println!("0th: {}", slice[0]);
-}
-
-fn pluralize(s: &str) -> String {
-    let mut ss = String::from(s); // or let mut ss = s.to_owned(); // creates String
-    ss.push_str("s");
-    ss
 }
