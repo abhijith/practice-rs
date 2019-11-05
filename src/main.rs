@@ -296,7 +296,7 @@ fn main() {
 
     let mut z = 0;
 
-    // compiler will suggest you use loop to denote infinite loops if the attribute is not added
+    // compiler will suggest you to use loop to denote infinite loops if the attribute is not added
     #[allow(while_true)]
     while true {
         if z == 5 {
