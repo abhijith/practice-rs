@@ -4,6 +4,7 @@
 use std::collections::HashMap;
 use std::fmt::Display;
 
+use std::cell::{Cell, RefCell};
 use std::fs::File;
 use std::mem;
 use std::thread;
@@ -1030,6 +1031,9 @@ fn main() {
     let b2 = Box::new(Some(42)); // Box is heap allocated
 
     println!("boxed {} {:?}", b1, b2);
+
+    let cell = Cell::new(42);
+    let ref_cell = RefCell::new(42);
 }
 
 fn show_all(v: Vec<&dyn Display>) {
