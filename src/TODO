@@ -6,3 +6,5 @@
 * Rc
 * Mutex
 * RefCell
+* Cell
+* RwLock
