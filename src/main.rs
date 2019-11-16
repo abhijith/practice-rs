@@ -1003,6 +1003,13 @@ fn main() {
 
     let v = vec![twelve, hi];
     show_all(v);
+
+    let mut xs = vec![1, 2, 3, 4];
+
+    for x in xs.iter_mut() {
+        *x = *x + 1;
+    }
+    println!("{:?}", xs);
 }
 
 fn show_all(v: Vec<&dyn Display>) {
