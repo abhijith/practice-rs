@@ -2,6 +2,8 @@
 #![allow(dead_code)]
 
 use std::collections::HashMap;
+use std::fmt::Display;
+
 use std::fs::File;
 use std::mem;
 use std::thread;
@@ -988,4 +990,16 @@ fn main() {
     };
 
     closure(1);
+
+    let twelve = &12 as &dyn Display;
+    let hi = &"Hi" as &dyn Display;
+
+    let v = vec![twelve, hi];
+    show_all(v);
+}
+
+fn show_all(v: Vec<&dyn Display>) {
+    for item in v {
+        println!("{}", item);
+    }
 }
