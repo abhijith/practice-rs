@@ -177,6 +177,11 @@ impl Sum<i32> for Vec<i32> {
     }
 }
 
+// pre 2018 edition
+fn addn_pre_2018(n: i32) -> Box<dyn Fn(i32) -> i32> {
+    Box::new(move |x| n + x)
+}
+
 fn addn(n: i32) -> impl Fn(i32) -> i32 {
     move |x| n + x
 }
@@ -983,9 +988,10 @@ fn main() {
     };
     person.talk();
 
+    let sec = 2;
     let closure = |num: i32| {
         println!("calculating slowly ...");
-        thread::sleep(Duration::from_secs(2));
+        thread::sleep(Duration::from_secs(sec));
         num
     };
 
