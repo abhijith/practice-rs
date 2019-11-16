@@ -749,6 +749,7 @@ fn main() {
     chars.sort();
     println!("{:?}", chars);
 
+    // into_iter takes ownership
     let s1: String = chars.into_iter().collect();
 
     let word2 = "asdf";
@@ -1009,7 +1010,21 @@ fn main() {
     for x in xs.iter_mut() {
         *x = *x + 1;
     }
+
+    for x in xs.iter() {
+        println!("{}", x);
+    }
+
+    xs.iter().for_each(|x| println!("{}", x));
+
     println!("{:?}", xs);
+
+    // into_iter takes ownership
+    for x in xs.into_iter() {
+        println!("{}", x);
+    }
+    // following code won't work since ownership changed above
+    // println!("{:?}", xs);
 }
 
 fn show_all(v: Vec<&dyn Display>) {
