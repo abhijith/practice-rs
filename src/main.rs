@@ -743,6 +743,7 @@ fn main() {
     let t = Table { key: "asdf", id: 1 };
     println!("Table {} -> {}", t.id, t.key);
 
+    // collect forces evaluation - otherwise the iterator is not evaluated
     let word = "yzxa";
     let mut chars: Vec<char> = word.chars().collect();
     chars.sort();
