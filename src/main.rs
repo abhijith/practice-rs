@@ -4,6 +4,8 @@
 use std::collections::HashMap;
 use std::fs::File;
 use std::mem;
+use std::thread;
+use std::time::Duration;
 
 // generic type
 #[derive(Debug)]
@@ -163,11 +165,11 @@ impl Animal for Cat {
     }
 }
 
-trait Summable<T> {
+trait Sum<T> {
     fn sum(&self) -> T;
 }
 
-impl Summable<i32> for Vec<i32> {
+impl Sum<i32> for Vec<i32> {
     fn sum(&self) -> i32 {
         self.iter().fold(0, |acc, x| x + acc)
     }
@@ -201,6 +203,7 @@ fn pluralize(s: &str) -> String {
 }
 
 fn main() {
+    println!("{}", "a//".replace("//", "/"));
     let s = String::from("book");
 
     let ss = pluralize(s.as_str());
@@ -965,7 +968,7 @@ fn main() {
     let uber: Human = Animal::create("uber mensch!");
     println!("{}", uber.name());
 
-    println!("summable sum: {}", vec![1, 2, 3, 4].sum());
+    println!("Sum trait => sum: {}", vec![1, 2, 3, 4].sum());
 
     // example of enums made of other types
     enum Creature {
@@ -977,4 +980,12 @@ fn main() {
         name: String::from("buddha"),
     };
     person.talk();
+
+    let closure = |num: i32| {
+        println!("calculating slowly ...");
+        thread::sleep(Duration::from_secs(2));
+        num
+    };
+
+    closure(1);
 }
