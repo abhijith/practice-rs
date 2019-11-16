@@ -1025,6 +1025,11 @@ fn main() {
     }
     // following code won't work since ownership changed above
     // println!("{:?}", xs);
+
+    let b1 = Box::new(42); // Box is heap allocated
+    let b2 = Box::new(Some(42)); // Box is heap allocated
+
+    println!("boxed {} {:?}", b1, b2);
 }
 
 fn show_all(v: Vec<&dyn Display>) {
