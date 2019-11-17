@@ -7,6 +7,7 @@ use std::fmt::Display;
 use std::cell::{Cell, RefCell};
 use std::fs::File;
 use std::mem;
+use std::ops::AddAssign;
 use std::thread;
 use std::time::Duration;
 
@@ -1095,13 +1096,13 @@ mod tests {
     }
 }
 
-pub struct GenRangeIter<T> {
+pub struct GenRangeIter<T: Rangeable> {
     curr: T,
     stop: T,
     step: T,
 }
 
-impl<T> GenRangeIter<T> {
+impl<T: Rangeable> GenRangeIter<T> {
     pub fn new(start: T, stop: T, step: T) -> Self {
         GenRangeIter {
             curr: start,
@@ -1111,7 +1112,11 @@ impl<T> GenRangeIter<T> {
     }
 }
 
-impl<T: PartialOrd + std::ops::AddAssign + Copy> Iterator for GenRangeIter<T> {
+pub trait Rangeable: PartialOrd + AddAssign + Copy {}
+
+impl<T: AddAssign + PartialOrd + Copy> Rangeable for T {}
+
+impl<T: Rangeable> Iterator for GenRangeIter<T> {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
         if self.curr > self.stop {
