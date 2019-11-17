@@ -1041,3 +1041,84 @@ fn show_all(v: Vec<&dyn Display>) {
         println!("{}", item);
     }
 }
+
+pub struct RangeIter {
+    curr: i32,
+    stop: i32,
+    step: i32,
+}
+
+impl RangeIter {
+    pub fn new(start: i32, stop: i32, step: i32) -> Self {
+        RangeIter {
+            curr: start,
+            stop,
+            step,
+        }
+    }
+}
+
+impl Iterator for RangeIter {
+    type Item = i32;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.curr > self.stop {
+            return None;
+        }
+        let res = self.curr;
+        self.curr += self.step;
+        Some(res)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn range_iter() {
+        let mut m = 0;
+        let it = RangeIter::new(0, 10, 1);
+        for s in it {
+            m += s;
+        }
+        assert_eq!(m, 55);
+    }
+
+    #[test]
+    fn gen_range_iter() {
+        let mut m = 0.0;
+        let it = GenRangeIter::new(0.0, 10.0, 1.0);
+        for s in it {
+            m += s;
+        }
+        assert_eq!(m, 55.0);
+    }
+}
+
+pub struct GenRangeIter<T> {
+    curr: T,
+    stop: T,
+    step: T,
+}
+
+impl<T> GenRangeIter<T> {
+    pub fn new(start: T, stop: T, step: T) -> Self {
+        GenRangeIter {
+            curr: start,
+            stop,
+            step,
+        }
+    }
+}
+
+impl<T: PartialOrd + std::ops::AddAssign + Copy> Iterator for GenRangeIter<T> {
+    type Item = T;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.curr > self.stop {
+            return None;
+        }
+        let res = self.curr;
+        self.curr += self.step;
+        Some(res)
+    }
+}
