@@ -1037,15 +1037,17 @@ fn main() {
     let ref_cell = RefCell::new(42);
 
     match std::fs::read_to_string("/home/abhi/.gitconfig") {
-        Ok(a) => println!("{}", a),
-        Err(e) => eprintln!("{}", e),
+        Ok(a) => println!("{:?}", a),
+        Err(e) => println!("{}", e),
     };
 
-    std::fs::read_to_string("/home/abhi/.gitconfig")
-        .map_err(|_e| println!("woah! error: {:?}", e))
+    let is_cool = std::fs::read_to_string("/home/abhi/.gitconfig")
+        .map_err(|e| println!("{:?}", e))
         .and_then(|x| Ok(x))
         .map(|x| println!("- inside - \n{}", x))
-        .unwrap();
+        .is_ok();
+
+    println!("is cool =>  {}", is_cool);
 }
 
 fn show_all(v: Vec<&dyn Display>) {
