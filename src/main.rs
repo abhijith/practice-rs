@@ -1035,6 +1035,17 @@ fn main() {
 
     let cell = Cell::new(42);
     let ref_cell = RefCell::new(42);
+
+    match std::fs::read_to_string("/home/abhi/.gitconfig") {
+        Ok(a) => println!("{}", a),
+        Err(e) => eprintln!("{}", e),
+    };
+
+    std::fs::read_to_string("/home/abhi/.gitconfig")
+        .map_err(|_e| println!("woah! error: {:?}", e))
+        .and_then(|x| Ok(x))
+        .map(|x| println!("- inside - \n{}", x))
+        .unwrap();
 }
 
 fn show_all(v: Vec<&dyn Display>) {
