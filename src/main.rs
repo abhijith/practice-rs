@@ -1,10 +1,10 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 
+use std::cell::{Cell, RefCell};
+use std::collections::BinaryHeap;
 use std::collections::HashMap;
 use std::fmt::Display;
-
-use std::cell::{Cell, RefCell};
 use std::fs::File;
 use std::mem;
 use std::ops::AddAssign;
@@ -211,7 +211,44 @@ fn pluralize(s: &str) -> String {
     ss
 }
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+// first element is used for Ordering
+struct Foo {
+    a: i32,
+    b: String,
+}
+
+// https://stackoverflow.com/questions/28387711/implementing-ord-for-a-type-is-awkward#28388168
+
 fn main() {
+    let mut heap = BinaryHeap::new();
+
+    // We can use peek to look at the next item in the heap. In this case,
+    // there's no items in there yet so we get None.
+    assert_eq!(heap.peek(), None);
+
+    // Let's add some scores...
+    heap.push(Foo {
+        a: 1,
+        b: String::from("a"),
+    });
+    heap.push(Foo {
+        a: 5,
+        b: String::from("b"),
+    });
+    heap.push(Foo {
+        a: 2,
+        b: String::from("c"),
+    });
+
+    println!("{:?}", heap.pop());
+    println!("{:?}", heap.pop());
+    println!("{:?}", heap.pop());
+
+    let ids = &[1, 2, 3];
+    let zeros: Vec<i32> = itertools::repeat_n(0, 10).collect();
+    let v: HashMap<_, _> = ids.iter().zip(zeros).collect();
+    println!("{:?}", v);
     println!("{}", "a//".replace("//", "/"));
     let s = String::from("book");
 
@@ -1017,7 +1054,7 @@ fn main() {
         println!("{}", x);
     }
 
-    xs.iter().for_each(|x| println!("{}", x));
+    xs.iter().take(2).for_each(|x| println!("{}", x));
 
     println!("{:?}", xs);
 
@@ -1048,6 +1085,21 @@ fn main() {
         .is_ok();
 
     println!("is cool =>  {}", is_cool);
+
+    let ids = &[1, 2, 3];
+    let zeros: Vec<i32> = itertools::repeat_n(0, 10).collect();
+    let v: Vec<(_, _)> = ids.iter().zip(zeros).collect();
+    println!("{:?}", v);
+
+    let a = &[10, 20, 30, 40, 50];
+    let b = &[1, 2, 3];
+    a.iter()
+        .zip(b)
+        .for_each(|(s, d)| println!("{:?} {:?}", s, d));
+
+    b.iter()
+        .zip(a)
+        .for_each(|(s, d)| println!("{:?} {:?}", s, d));
 }
 
 fn show_all(v: Vec<&dyn Display>) {
