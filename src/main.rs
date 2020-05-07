@@ -1,6 +1,7 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 
+use rayon::prelude::*;
 use std::cell::{Cell, RefCell};
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
@@ -299,6 +300,13 @@ fn main() {
         first_name = "James",
         second_name = "Bond"
     );
+
+    // You can right-align text with a specified width. This will output
+    // "     1". 5 white spaces and a "1".
+    println!("{number:>width$}", number = 1, width = 6);
+
+    // You can pad numbers with extra zeroes. This will output "000001".
+    println!("{number:>0width$}", number = 1, width = 6);
 
     #[allow(dead_code)]
     struct Structure(i32);
@@ -1116,6 +1124,13 @@ fn main() {
     for x in people {
         println!("person: {:?}", x);
     }
+
+    let n = 10; // Set n to 10_000_000 to see multi-core in action
+    println!(
+        "counting upto to {} in parallel. Set n to 10000000 to see multi-core in action",
+        n
+    );
+    (0..n).into_par_iter().for_each(|i| println!("{}", i));
 }
 
 fn show_all(v: Vec<&dyn Display>) {
