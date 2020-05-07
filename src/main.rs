@@ -1123,6 +1123,7 @@ fn main() {
 
     for x in people {
         println!("person: {:#?}", x); // pretty print with {:#?}
+        eprintln!("person: {:#?}", x); // pretty print with {:#?}
     }
 
     let n = 10; // Set n to 10_000_000 to see multi-core in action
