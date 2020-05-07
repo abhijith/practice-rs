@@ -1122,7 +1122,7 @@ fn main() {
     let people = People::new(ps);
 
     for x in people {
-        println!("person: {:?}", x);
+        println!("person: {:#?}", x); // pretty print with {:#?}
     }
 
     let n = 10; // Set n to 10_000_000 to see multi-core in action
