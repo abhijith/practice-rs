@@ -119,6 +119,7 @@ static MONTHS: u32 = 12; // fixed address
 // mutable static - needs to be enclosed with unsafe block when using it
 static mut GLOBAL_STATIC_MUT: u8 = 2; // fixed address
 
+#[derive(Clone, Debug, Default)]
 struct Person {
     name: String,
 }
@@ -1100,6 +1101,21 @@ fn main() {
     b.iter()
         .zip(a)
         .for_each(|(s, d)| println!("{:?} {:?}", s, d));
+
+    let p1 = Person {
+        name: "a".to_string(),
+    };
+    let p2 = Person {
+        name: "b".to_string(),
+    };
+
+    let ps: Vec<Person> = vec![p1, p2];
+
+    let people = People::new(ps);
+
+    for x in people {
+        println!("person: {:?}", x);
+    }
 }
 
 fn show_all(v: Vec<&dyn Display>) {
@@ -1192,3 +1208,41 @@ impl<T: Rangeable> Iterator for GenRangeIter<T> {
         Some(res)
     }
 }
+
+struct People {
+    pub inner: Vec<Person>,
+    n: usize,
+}
+
+impl People {
+    pub fn new(inner: Vec<Person>) -> Self {
+        People { inner: inner, n: 0 }
+    }
+}
+
+// https://doc.rust-lang.org/std/iter/trait.IntoIterator.html
+
+impl IntoIterator for People {
+    type Item = Person;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.into_iter()
+    }
+}
+
+// implementing iterator the hard-way
+
+// impl Iterator for People {
+//     type Item = Person;
+
+//     fn next(&mut self) -> Option<Self::Item> {
+//         match self.inner.iter().nth(self.n) {
+//             None => None,
+//             Some(item) => {
+//                 self.n += 1;
+//                 Some(item.to_owned())
+//             }
+//         }
+//     }
+// }
