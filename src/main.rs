@@ -1,6 +1,7 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 
+use itertools::Itertools;
 use rayon::prelude::*;
 use std::cell::{Cell, RefCell};
 use std::collections::BinaryHeap;
@@ -223,6 +224,11 @@ struct Foo {
 // https://stackoverflow.com/questions/28387711/implementing-ord-for-a-type-is-awkward#28388168
 
 fn main() {
+    let xs: Vec<(i32, i32)> = (0..10)
+        .flat_map(|i| (0..3).map(move |j| (i, j)).collect::<Vec<(i32, i32)>>())
+        .collect();
+    println!("{:?}", xs);
+
     let mut heap = BinaryHeap::new();
 
     // We can use peek to look at the next item in the heap. In this case,
@@ -374,6 +380,9 @@ fn main() {
             z += 1
         }
     }
+
+    let v: Vec<Vec<u32>> = vec![vec![]];
+    println!("{:?}", v);
 
     let sentence = ["this", "is", "cool"];
     println!("{:?}", sentence);
