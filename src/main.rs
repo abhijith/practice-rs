@@ -1,4 +1,4 @@
-#![allow(unused_variables)]
+![allow(unused_variables)]
 #![allow(dead_code)]
 
 use itertools::Itertools;
@@ -1277,4 +1277,30 @@ impl IntoIterator for People {
 
 fn returns_closure() -> impl Fn(i32) -> i32 {
     |x| x + 1
+}
+
+pub struct Things {
+    foo: String,
+    bar: u32,
+    baz: bool,
+}
+
+pub fn do_stuff(things: Things) -> String {
+    let Things { foo, bar, .. } = things;
+    format!("{}{}", foo, bar)
+}
+
+pub fn do_stuff2(Things { foo, bar, baz }: Things) -> String {
+    format!("{}{}{}", foo, bar, baz)
+}
+
+pub fn do_stuff3(things: Things) -> String {
+    match things {
+        Things { baz: true, .. } => "No formatting".to_string(),
+        Things {
+            foo,
+            bar,
+            baz: false,
+        } => format!("{}{}", foo, bar),
+    }
 }
