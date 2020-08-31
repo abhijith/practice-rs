@@ -224,7 +224,9 @@ struct Foo {
 
 fn main() {
     let a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    let v: Vec<i32> = a.iter().chunks(2).into_iter().collect();
+    for x in a.chunks(2) {
+        dbg!(x);
+    }
 
     let xs: Vec<(i32, i32)> = (0..10)
         .flat_map(|i| (0..3).map(move |j| (i, j)).collect::<Vec<(i32, i32)>>())
