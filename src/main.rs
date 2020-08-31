@@ -593,6 +593,41 @@ fn main() {
         }
     }
 
+    #[derive(Debug, Default)]
+    struct Hero {
+        name: String,
+        nick: String,
+        active: bool,
+    }
+
+    impl Hero {
+        pub fn builder() -> Self {
+            Self::default()
+        }
+
+        pub fn name(mut self, name: String) -> Self {
+            self.name = name;
+            self
+        }
+
+        pub fn nick(mut self, nick: String) -> Self {
+            self.nick = nick;
+            self
+        }
+
+        pub fn active(mut self, active: bool) -> Self {
+            self.active = active;
+            self
+        }
+    }
+
+    let ubermensch = Hero::builder()
+        .name("Superman".into())
+        .nick("Clark Kent".into());
+
+    println!("ubermensch {:?}", ubermensch);
+    dbg!(ubermensch);
+
     union IntOrFloat {
         i: i32,
         f: f32,
