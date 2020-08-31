@@ -724,6 +724,20 @@ fn main() {
     // does not compile
     // print_meters(d2);
 
+    // You can also define structs that don’t have any fields!
+    // These are called unit-like structs because they behave similarly to (), the unit type.
+    // Unit-like structs can be useful in situations in which you need to implement a trait on some type but don’t have any data that you want to store in the type itself.
+    #[derive(Debug)]
+    struct UnitTypeStruct();
+
+    impl UnitTypeStruct {
+        pub fn new() -> Self {
+            Self {}
+        }
+    }
+
+    println!("unit-type struct: {:?}", UnitTypeStruct::new());
+
     #[allow(dead_code)]
     const MAX_LIMIT: u16 = 10; // type is mandatory. Has no fixed address
 
