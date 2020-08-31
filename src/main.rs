@@ -1,7 +1,6 @@
-![allow(unused_variables)]
+#![allow(unused_variables)]
 #![allow(dead_code)]
 
-use itertools::Itertools;
 use rayon::prelude::*;
 use std::cell::{Cell, RefCell};
 use std::collections::BinaryHeap;
