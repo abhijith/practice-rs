@@ -1392,6 +1392,12 @@ fn custom_assert_failure_message() {
 
 #[test]
 #[should_panic]
-fn this_will_assert_a_panic() {
+fn assert_panic() {
     panic!("this will panic")
+}
+
+#[test]
+#[should_panic(expected = "this is the panic string")]
+fn assert_panic_message() {
+    panic!("this is the panic string")
 }
