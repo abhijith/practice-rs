@@ -12,217 +12,22 @@ use std::ops::AddAssign;
 use std::thread;
 use std::time::Duration;
 
-// generic type
-#[derive(Debug)]
-struct Point<T> {
-    x: T,
-    y: T,
-}
-
-#[derive(Debug)]
-struct Point2<T, U> {
-    x: T,
-    y: U,
-}
-
-// implementation on generic type
-impl<T> Point<T> {
-    fn x(&self) -> &T {
-        &self.x
-    }
-}
-
-// implementation on concrete type
-// impl Point<i32> {
-//     fn x(&self) -> &i32 {
-//         &self.x
-//     }
-// }
-
-// end of https://doc.rust-lang.org/book/second-edition/ch10-01-syntax.html
-// You might be wondering whether there is a runtime cost when you re
-// using generic type parameters. The good news is that Rust implements
-// generics in such a way that your code doesn t run any slower using
-// generic types than it would with concrete types.
-
-// Rust accomplishes this by performing monomorphization of the code that
-// is using generics at compile time. Monomorphization is the process of
-// turning generic code into specific code by filling in the concrete
-// types that are used when compiled.
-
-fn sample() {
-    let vec_i32 = vec![10, 1, 20, 3, 4, 5];
-    let vec_char = vec!['a', 'b', 'z', 'y', 'w'];
-
-    let rs_i32 = largest_i32(&vec_i32);
-    let rs_char = largest_char(&vec_char);
-
-    let (li, lc) = (largest(&vec_i32), largest(&vec_char));
-    println!("{} {} {} {}", rs_i32, rs_char, li, lc);
-
-    let p1 = Point { x: 1, y: 1 };
-    let p2 = Point { x: 1.0, y: 1.0 };
-    let p3 = Point2 { x: 1, y: 1.0 };
-
-    println!("{:?} {:?} {:?}", p1, p2, p3);
-    println!("{}", p1.x());
-}
-
-fn largest_i32(list: &[i32]) -> i32 {
-    let mut largest = list[0];
-
-    for &x in list.iter() {
-        if x > largest {
-            largest = x
-        }
-    }
-
-    largest
-}
-
-fn largest_char(list: &[char]) -> char {
-    let mut largest = list[0];
-
-    for &x in list.iter() {
-        if x > largest {
-            largest = x
-        }
-    }
-
-    largest
-}
-
-fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
-    let mut l = list[0];
-
-    for &x in list.iter() {
-        if x > l {
-            l = x
-        }
-    }
-
-    l
-}
-
-fn panik() -> () {
-    let f = File::open("hello");
-
-    let f = match f {
-        Ok(file) => file,
-        Err(error) => panic!("No such file: {:?}", error),
-    };
-}
-
-const ANSWER_TO_LIFE: u32 = 42;
-// immutable
-static MONTHS: u32 = 12; // fixed address
-
-// mutable static - needs to be enclosed with unsafe block when using it
-static mut GLOBAL_STATIC_MUT: u8 = 2; // fixed address
-
-#[derive(Clone, Debug, Default)]
-struct Person {
-    name: String,
-}
-
-impl Person {
-    fn talk(&self) {
-        println!("hello {}", self.name);
-    }
-}
-
-trait Animal {
-    fn create(name: &'static str) -> Self; // associated fn does not take a self since it is not called on instance.
-    fn name(&self) -> &'static str;
-    fn talk(&self) {
-        println!("{} cannot talk", self.name());
-    }
-}
-
-#[derive(Debug)]
-struct Human {
-    name: &'static str,
-}
-
-#[derive(Debug)]
-struct Cat {
-    name: &'static str,
-}
-
-impl Animal for Human {
-    fn create(name: &'static str) -> Human {
-        Human { name: name }
-    }
-    fn name(&self) -> &'static str {
-        self.name
-    }
-    fn talk(&self) {
-        println!("{} says hello!", self.name);
-    }
-}
-
-impl Animal for Cat {
-    fn create(name: &'static str) -> Cat {
-        Cat { name: name }
-    }
-
-    fn name(&self) -> &'static str {
-        self.name
-    }
-}
-
-trait Sum<T> {
-    fn sum(&self) -> T;
-}
-
-impl Sum<i32> for Vec<i32> {
-    fn sum(&self) -> i32 {
-        self.iter().fold(0, |acc, x| x + acc)
-    }
-}
-
-// pre 2018 edition
-fn addn_pre_2018(n: i32) -> Box<dyn Fn(i32) -> i32> {
-    Box::new(move |x| n + x)
-}
-
-fn addn(n: i32) -> impl Fn(i32) -> i32 {
-    move |x| n + x
-}
-
-fn slices() {
-    let d1 = [1, 2, 3, 4, 5];
-    use_slice(&d1[1..4]);
-
-    let mut d2 = [1, 2, 3, 4, 5];
-    mut_slice(&mut d2[1..3]);
-}
-
-fn use_slice(slice: &[i32]) {
-    println!("0th: {} len {}", slice[0], slice.len());
-}
-
-fn mut_slice(slice: &mut [i32]) {
-    slice[0] = 99;
-    println!("0th: {}", slice[0]);
-}
-
-fn pluralize(s: &str) -> String {
-    let mut ss = String::from(s); // or let mut ss = s.to_owned(); // creates String
-    ss.push_str("s");
-    ss
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-// first element is used for Ordering
-struct Foo {
-    a: i32,
-    b: String,
-}
-
-// https://stackoverflow.com/questions/28387711/implementing-ord-for-a-type-is-awkward#28388168
-
 fn main() {
+    let origin = FooPoint { x: 0, y: 0, z: 0 };
+
+    // ignoring few values in pattern matching
+    match origin {
+        FooPoint { x, .. } => println!("x is {}", x),
+    }
+
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, .., last) => {
+            println!("Some numbers: {}, {}", first, last);
+        }
+    }
+
     let a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     for x in a.chunks(2) {
         dbg!(x);
@@ -1194,6 +999,222 @@ fn main() {
         n
     );
     (0..n).into_par_iter().for_each(|i| println!("{}", i));
+}
+
+// generic type
+#[derive(Debug)]
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+#[derive(Debug)]
+struct Point2<T, U> {
+    x: T,
+    y: U,
+}
+
+// implementation on generic type
+impl<T> Point<T> {
+    fn x(&self) -> &T {
+        &self.x
+    }
+}
+
+// implementation on concrete type
+// impl Point<i32> {
+//     fn x(&self) -> &i32 {
+//         &self.x
+//     }
+// }
+
+// end of https://doc.rust-lang.org/book/second-edition/ch10-01-syntax.html
+// You might be wondering whether there is a runtime cost when you re
+// using generic type parameters. The good news is that Rust implements
+// generics in such a way that your code doesn t run any slower using
+// generic types than it would with concrete types.
+
+// Rust accomplishes this by performing monomorphization of the code that
+// is using generics at compile time. Monomorphization is the process of
+// turning generic code into specific code by filling in the concrete
+// types that are used when compiled.
+
+fn sample() {
+    let vec_i32 = vec![10, 1, 20, 3, 4, 5];
+    let vec_char = vec!['a', 'b', 'z', 'y', 'w'];
+
+    let rs_i32 = largest_i32(&vec_i32);
+    let rs_char = largest_char(&vec_char);
+
+    let (li, lc) = (largest(&vec_i32), largest(&vec_char));
+    println!("{} {} {} {}", rs_i32, rs_char, li, lc);
+
+    let p1 = Point { x: 1, y: 1 };
+    let p2 = Point { x: 1.0, y: 1.0 };
+    let p3 = Point2 { x: 1, y: 1.0 };
+
+    println!("{:?} {:?} {:?}", p1, p2, p3);
+    println!("{}", p1.x());
+}
+
+fn largest_i32(list: &[i32]) -> i32 {
+    let mut largest = list[0];
+
+    for &x in list.iter() {
+        if x > largest {
+            largest = x
+        }
+    }
+
+    largest
+}
+
+fn largest_char(list: &[char]) -> char {
+    let mut largest = list[0];
+
+    for &x in list.iter() {
+        if x > largest {
+            largest = x
+        }
+    }
+
+    largest
+}
+
+fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
+    let mut l = list[0];
+
+    for &x in list.iter() {
+        if x > l {
+            l = x
+        }
+    }
+
+    l
+}
+
+fn panik() -> () {
+    let f = File::open("hello");
+
+    let f = match f {
+        Ok(file) => file,
+        Err(error) => panic!("No such file: {:?}", error),
+    };
+}
+
+const ANSWER_TO_LIFE: u32 = 42;
+// immutable
+static MONTHS: u32 = 12; // fixed address
+
+// mutable static - needs to be enclosed with unsafe block when using it
+static mut GLOBAL_STATIC_MUT: u8 = 2; // fixed address
+
+#[derive(Clone, Debug, Default)]
+struct Person {
+    name: String,
+}
+
+impl Person {
+    fn talk(&self) {
+        println!("hello {}", self.name);
+    }
+}
+
+trait Animal {
+    fn create(name: &'static str) -> Self; // associated fn does not take a self since it is not called on instance.
+    fn name(&self) -> &'static str;
+    fn talk(&self) {
+        println!("{} cannot talk", self.name());
+    }
+}
+
+#[derive(Debug)]
+struct Human {
+    name: &'static str,
+}
+
+#[derive(Debug)]
+struct Cat {
+    name: &'static str,
+}
+
+impl Animal for Human {
+    fn create(name: &'static str) -> Human {
+        Human { name: name }
+    }
+    fn name(&self) -> &'static str {
+        self.name
+    }
+    fn talk(&self) {
+        println!("{} says hello!", self.name);
+    }
+}
+
+impl Animal for Cat {
+    fn create(name: &'static str) -> Cat {
+        Cat { name: name }
+    }
+
+    fn name(&self) -> &'static str {
+        self.name
+    }
+}
+
+trait Sum<T> {
+    fn sum(&self) -> T;
+}
+
+impl Sum<i32> for Vec<i32> {
+    fn sum(&self) -> i32 {
+        self.iter().fold(0, |acc, x| x + acc)
+    }
+}
+
+// pre 2018 edition
+fn addn_pre_2018(n: i32) -> Box<dyn Fn(i32) -> i32> {
+    Box::new(move |x| n + x)
+}
+
+fn addn(n: i32) -> impl Fn(i32) -> i32 {
+    move |x| n + x
+}
+
+fn slices() {
+    let d1 = [1, 2, 3, 4, 5];
+    use_slice(&d1[1..4]);
+
+    let mut d2 = [1, 2, 3, 4, 5];
+    mut_slice(&mut d2[1..3]);
+}
+
+fn use_slice(slice: &[i32]) {
+    println!("0th: {} len {}", slice[0], slice.len());
+}
+
+fn mut_slice(slice: &mut [i32]) {
+    slice[0] = 99;
+    println!("0th: {}", slice[0]);
+}
+
+fn pluralize(s: &str) -> String {
+    let mut ss = String::from(s); // or let mut ss = s.to_owned(); // creates String
+    ss.push_str("s");
+    ss
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+// first element is used for Ordering
+struct Foo {
+    a: i32,
+    b: String,
+}
+
+// https://stackoverflow.com/questions/28387711/implementing-ord-for-a-type-is-awkward#28388168
+
+struct FooPoint {
+    x: i32,
+    y: i32,
+    z: i32,
 }
 
 fn show_all(v: Vec<&dyn Display>) {
