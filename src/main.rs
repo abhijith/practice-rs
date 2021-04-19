@@ -197,6 +197,14 @@ fn main() {
     println!("{:?}", sentence);
     println!("{}", sentence.len());
 
+    // compilation error
+    // let x = sentence[3];
+    if let Some(x) = sentence.get(3) {
+        println!("{}", x)
+    } else {
+        println!("nothing!")
+    }
+
     #[allow(unused_mut, unused_variables)]
     let mut coll_of_str = ["a", "b", "c"]; // type [&str; 3]
                                            /* mismatched types
