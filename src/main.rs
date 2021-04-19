@@ -1402,6 +1402,8 @@ fn assert_panic_message() {
     panic!("this is the panic string")
 }
 
+// Writing tests so they return a Result<T, E> enables you to use the question mark operator in the body of tests, which can be a convenient way to write tests that should fail if any operation within them returns an Err variant.
+// https://doc.rust-lang.org/book/ch11-01-writing-tests.html#using-resultt-e-in-tests
 #[test]
 fn test_returns_result() -> Result<(), String> {
     if 2 + 2 == 4 {
