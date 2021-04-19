@@ -1401,3 +1401,12 @@ fn assert_panic() {
 fn assert_panic_message() {
     panic!("this is the panic string")
 }
+
+#[test]
+fn test_returns_result() -> Result<(), String> {
+    if 2 + 2 == 4 {
+        Ok(())
+    } else {
+        Err(String::from("two plus two does not equal four"))
+    }
+}
