@@ -1383,3 +1383,10 @@ pub fn do_stuff3(things: Things) -> String {
         } => format!("{}{}", foo, bar),
     }
 }
+
+#[test]
+fn custom_assert_failure_message() {
+    let result = 1;
+    assert!(false, "this is the custom failure message");
+    assert_eq!(2, 3, "this is the custom failure message `{}`", result);
+}
