@@ -1386,7 +1386,12 @@ pub fn do_stuff3(things: Things) -> String {
 
 #[test]
 fn custom_assert_failure_message() {
-    let result = 1;
-    assert!(false, "this is the custom failure message");
-    assert_eq!(2, 3, "this is the custom failure message `{}`", result);
+    assert!(true, "this is the custom failure message");
+    assert_eq!(2, 2, "this is the custom failure message `{}`", 2);
+}
+
+#[test]
+#[should_panic]
+fn this_will_assert_a_panic() {
+    panic!("this will panic")
 }
