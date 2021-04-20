@@ -1018,7 +1018,7 @@ struct Point<T> {
 }
 
 #[derive(Debug)]
-struct Point2<T, U> {
+struct Point2<T: Display + Clone, U: Display + Copy> {
     x: T,
     y: U,
 }
