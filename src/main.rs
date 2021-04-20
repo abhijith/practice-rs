@@ -14,6 +14,9 @@ use std::{
 };
 
 fn main() {
+    println!("write to stdout");
+    eprintln!("write to stderr");
+
     let origin = FooPoint { x: 0, y: 0, z: 0 };
 
     // ignoring few values in pattern matching
@@ -1447,5 +1450,45 @@ fn test_returns_result() -> Result<(), String> {
 pub trait Summary {
     fn summarize(&self) -> String {
         String::from("This is a default implementation")
+    }
+}
+
+// impl Foobar is a syntactic sugar for trait bounds
+
+// pub fn notify(item1: &impl Summary, item2: &impl Summary) {
+// is equivalent to
+// pub fn notify<T: Summary>(item1: &T, item2: &T) {
+
+// trait inheritance
+// https://stackoverflow.com/a/47966422/68963
+
+#[derive(Debug)]
+struct Point3<T: Display, U> {
+    x: T,
+    y: U,
+}
+
+// https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
+
+struct Pair<T> {
+    x: T,
+    y: T,
+}
+
+// new for generic type T
+impl<T> Pair<T> {
+    fn new(x: T, y: T) -> Self {
+        Self { x, y }
+    }
+}
+
+// cmp_display implemented _only_ if T implements Display and PartialOrd
+impl<T: Display + PartialOrd> Pair<T> {
+    fn cmp_display(&self) {
+        if self.x >= self.y {
+            println!("The largest member is x = {}", self.x);
+        } else {
+            println!("The largest member is y = {}", self.y);
+        }
     }
 }
