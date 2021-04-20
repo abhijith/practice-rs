@@ -1443,3 +1443,9 @@ fn test_returns_result() -> Result<(), String> {
 // can also be written as
 
 // use std::io::{self, Write};
+
+pub trait Summary {
+    fn summarize(&self) -> String {
+        String::from("This is a default implementation")
+    }
+}
