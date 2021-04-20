@@ -2,15 +2,16 @@
 #![allow(dead_code)]
 
 use rayon::prelude::*;
-use std::cell::{Cell, RefCell};
-use std::collections::BinaryHeap;
-use std::collections::HashMap;
-use std::fmt::Display;
-use std::fs::File;
-use std::mem;
-use std::ops::AddAssign;
-use std::thread;
-use std::time::Duration;
+use std::{
+    cell::{Cell, RefCell},
+    collections::{BinaryHeap, HashMap},
+    fmt::Display,
+    fs::File,
+    mem,
+    ops::AddAssign,
+    thread,
+    time::Duration,
+};
 
 fn main() {
     let origin = FooPoint { x: 0, y: 0, z: 0 };
@@ -1402,8 +1403,19 @@ fn assert_panic_message() {
     panic!("this is the panic string")
 }
 
-// Writing tests so they return a Result<T, E> enables you to use the question mark operator in the body of tests, which can be a convenient way to write tests that should fail if any operation within them returns an Err variant.
+#[test]
+#[ignore]
+fn expensive_test() {
+    // code that takes an hour to run
+}
+
 // https://doc.rust-lang.org/book/ch11-01-writing-tests.html#using-resultt-e-in-tests
+
+// Writing tests so they return a Result<T, E> enables you to use the
+// question mark operator in the body of tests, which can be a
+// convenient way to write tests that should fail if any operation
+// within them returns an Err variant.
+
 #[test]
 fn test_returns_result() -> Result<(), String> {
     if 2 + 2 == 4 {
@@ -1412,3 +1424,22 @@ fn test_returns_result() -> Result<(), String> {
         Err(String::from("two plus two does not equal four"))
     }
 }
+
+// Some command line options go to cargo test, and some go to the
+// resulting test binary. To separate these two types of arguments,
+// you list the arguments that go to cargo test followed by the
+// separator -- and then the ones that go to the test binary. Running
+// cargo test --help displays the options you can use with cargo test,
+// and running cargo test -- --help displays the options you can use
+// after the separator --.
+
+// $ cargo test -- --test-threads=1
+// $ cargo test -- --show-output
+// $ cargo test -- --ignored
+
+// use std::io;
+// use std::io::Write;
+
+// can also be written as
+
+// use std::io::{self, Write};
