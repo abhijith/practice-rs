@@ -1,8 +1,8 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 
-use rayon::prelude::*;
-use std::{
+pub(crate) use rayon::prelude::*;
+pub(crate) use std::{
     cell::{Cell, RefCell},
     collections::{BinaryHeap, HashMap},
     fmt::Display,
@@ -31,6 +31,8 @@ fn main() {
             println!("Some numbers: {}, {}", first, last);
         }
     }
+
+    numbers.
 
     let a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     for x in a.chunks(2) {
@@ -312,7 +314,7 @@ fn main() {
         Vim,
         Ed,
         Nano,
-    };
+    }
 
     let editor = Editor::Emacs;
 
@@ -328,7 +330,7 @@ fn main() {
         Success(f64),
         Failure(u16, char),
         Uncertainty,
-    };
+    }
 
     // tuple and struct enum
     enum Colour {
@@ -1253,6 +1255,7 @@ impl RangeIter {
 
 impl Iterator for RangeIter {
     type Item = i32;
+
     fn next(&mut self) -> Option<Self::Item> {
         if self.curr > self.stop {
             return None;
