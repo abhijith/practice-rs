@@ -1505,3 +1505,53 @@ impl<T: Display + PartialOrd> Pair<T> {
         }
     }
 }
+
+// specify multiple trait bounds
+
+fn bar1<T: Display + Clone, U: Display + Debug + Clone>(t: T, u: U) -> String {
+    format!("{} {}", t, u)
+}
+
+fn bar2<T, U>(t: T, u: U) -> String
+where
+    T: Display + Clone,
+    U: Display + Debug + Clone,
+{
+    format!("{} {}", t, u)
+}
+
+fn bar3<T, U>(t: impl Display + Clone, u: impl Display + Debug + Clone) -> String {
+    format!("{} {}", t, u)
+}
+
+struct Foo;
+struct Bar;
+
+impl Summary for Foo {}
+impl Summary for Bar {}
+
+// However, you can only use impl Trait if you’re returning a single
+// type. For example, this code that returns either a NewsArticle or a
+// Tweet with the return type specified as impl Summary wouldn’t work:
+
+// This code does not compile due to restrictions around how the impl
+// Trait syntax is implemented in the compiler.
+
+/*
+fn foobar(switch: bool) -> impl Summary {
+    if switch {
+        Foo
+    } else {
+        Bar
+    }
+}
+*/
+
+// alternative: uses Trait Object
+fn foobar(switch: bool) -> Box<dyn Summary> {
+    if switch {
+        Box::new(Foo)
+    } else {
+        Box::new(Bar)
+    }
+}
