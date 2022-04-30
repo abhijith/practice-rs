@@ -32,8 +32,6 @@ fn main() {
         }
     }
 
-    numbers.
-
     let a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     for x in a.chunks(2) {
         dbg!(x);
@@ -393,7 +391,7 @@ fn main() {
     struct PureStructPoint {
         x: u8,
         y: u8,
-    };
+    }
 
     #[allow(dead_code)]
     struct TupleStructPoint(u8, u8);
@@ -462,9 +460,9 @@ fn main() {
 
     fn _creat_user(name: String, age: u8, email: String) -> User {
         User {
-            name: name,
-            age: age,
-            email: email,
+            name,
+            age,
+            email,
             active: true,
         }
     }
@@ -1154,7 +1152,7 @@ struct Cat {
 
 impl Animal for Human {
     fn create(name: &'static str) -> Human {
-        Human { name: name }
+        Human { name }
     }
     fn name(&self) -> &'static str {
         self.name
@@ -1166,7 +1164,7 @@ impl Animal for Human {
 
 impl Animal for Cat {
     fn create(name: &'static str) -> Cat {
-        Cat { name: name }
+        Cat { name }
     }
 
     fn name(&self) -> &'static str {
@@ -1330,7 +1328,7 @@ struct People {
 
 impl People {
     pub fn new(inner: Vec<Person>) -> Self {
-        People { inner: inner, n: 0 }
+        People { inner, n: 0 }
     }
 }
 
