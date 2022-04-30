@@ -536,6 +536,18 @@ fn main() {
     }
 
     let d1: Meter = Meter(10);
+
+    impl std::ops::Deref for Meter {
+        type Target = u8;
+
+        fn deref(&self) -> &Self::Target {
+            &self.0
+        }
+    }
+
+    let m = Meter(10);
+    println!("{:?} {} {}", m, *m, m.0);
+
     // let d2: u8 = 10;
     print_meters(d1);
     // does not compile
