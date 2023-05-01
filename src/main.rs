@@ -1227,7 +1227,7 @@ fn pluralize(s: &str) -> String {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 // first element is used for Ordering
-struct F {
+struct Foo {
     a: i32,
     b: String,
 }
@@ -1523,11 +1523,11 @@ fn bar3<T, U>(t: impl Display + Clone, u: impl Display + Clone) -> String {
     format!("{} {}", t, u)
 }
 
-struct Foo;
-struct Bar;
+struct FooSummary;
+struct BarSummary;
 
-impl Summary for Foo {}
-impl Summary for Bar {}
+impl Summary for FooSummary {}
+impl Summary for BarSummary {}
 
 // However, you can only use impl Trait if you’re returning a single
 // type. For example, this code that returns either a NewsArticle or a
@@ -1549,9 +1549,9 @@ fn foobar(switch: bool) -> impl Summary<> {
 // alternative: uses Trait Object
 fn foobar(switch: bool) -> Box<dyn Summary> {
     if switch {
-        Box::new(Foo)
+        Box::new(FooSummary)
     } else {
-        Box::new(Bar)
+        Box::new(BarSummary)
     }
 }
 
