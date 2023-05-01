@@ -1,5 +1,4 @@
-#![allow(unused_variables)]
-#![allow(dead_code)]
+#![allow(dead_code, unused_variables)]
 
 pub(crate) use rayon::prelude::*;
 pub(crate) use std::{
@@ -1228,7 +1227,7 @@ fn pluralize(s: &str) -> String {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 // first element is used for Ordering
-struct Foo {
+struct F {
     a: i32,
     b: String,
 }
@@ -1508,19 +1507,19 @@ impl<T: Display + PartialOrd> Pair<T> {
 
 // specify multiple trait bounds
 
-fn bar1<T: Display + Clone, U: Display + Debug + Clone>(t: T, u: U) -> String {
+fn bar1<T: Display + Clone, U: Display + Clone>(t: T, u: U) -> String {
     format!("{} {}", t, u)
 }
 
 fn bar2<T, U>(t: T, u: U) -> String
 where
     T: Display + Clone,
-    U: Display + Debug + Clone,
+    U: Display + Clone,
 {
     format!("{} {}", t, u)
 }
 
-fn bar3<T, U>(t: impl Display + Clone, u: impl Display + Debug + Clone) -> String {
+fn bar3<T, U>(t: impl Display + Clone, u: impl Display + Clone) -> String {
     format!("{} {}", t, u)
 }
 
@@ -1538,7 +1537,7 @@ impl Summary for Bar {}
 // Trait syntax is implemented in the compiler.
 
 /*
-fn foobar(switch: bool) -> impl Summary {
+fn foobar(switch: bool) -> impl Summary<> {
     if switch {
         Foo
     } else {
@@ -1554,4 +1553,46 @@ fn foobar(switch: bool) -> Box<dyn Summary> {
     } else {
         Box::new(Bar)
     }
+}
+
+trait Draw {
+    fn draw(&self);
+}
+
+// Sometimes, you might need one trait to use another trait’s
+// functionality. In this case, you need to rely on the dependent trait
+// also being implemented. The trait you rely on is a supertrait of the
+// trait you’re implementing.
+
+//
+
+trait FirstName {
+    fn first(&self);
+}
+
+trait LastName {
+    fn last(&self);
+}
+
+trait Name: FirstName + LastName {}
+
+#[derive(Debug, Clone)]
+struct Dog;
+
+impl FirstName for Dog {
+    fn first(&self) {
+        println!("first");
+    }
+}
+
+impl Name for Dog {
+    fn first(&self) {
+        println!("first");
+    }
+}
+
+fn dogendra() {
+    let dog = Dog;
+
+    println!("{:?}", dog);
 }
