@@ -1598,3 +1598,30 @@ fn dogendra() {
 
     println!("{:?}", dog);
 }
+
+#[derive(Debug)]
+struct F {
+    a: u8,
+    b: u8,
+    c: u8,
+    d: String,
+}
+
+fn f(F { a, d, .. }: F) -> (u8, String) {
+    println!("{a} {d}");
+    (a, d)
+}
+
+// pattern matching coolness
+fn patty() {
+    let x = F {
+        a: 1,
+        b: 2,
+        c: 3,
+        d: "cool!".into(),
+    };
+    let (a, d) = f(x);
+
+    assert_eq!(a, 1);
+    assert_eq!(d, "cool!".to_string());
+}
