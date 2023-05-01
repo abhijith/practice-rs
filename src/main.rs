@@ -1585,11 +1585,13 @@ impl FirstName for Dog {
     }
 }
 
-impl Name for Dog {
-    fn first(&self) {
-        println!("first");
+impl LastName for Dog {
+    fn last(&self) {
+        println!("last");
     }
 }
+
+impl Name for Dog {}
 
 fn dogendra() {
     let dog = Dog;
