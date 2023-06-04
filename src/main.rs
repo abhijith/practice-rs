@@ -695,8 +695,6 @@ fn main() {
     chars2.sort();
     println!("{:?}", chars2);
 
-    use std::iter::FromIterator;
-
     let s2: String = String::from_iter(chars2);
 
     println!("{:?} {:?}", s1, s2);
@@ -1624,4 +1622,20 @@ fn patty() {
 
     assert_eq!(a, 1);
     assert_eq!(d, "cool!".to_string());
+}
+
+fn lifetime() {
+    let string1 = String::from("Hello");
+    let string2 = String::from("World");
+
+    let result = longest_word(&string1, &string2);
+    println!("The longest word is: {}", result);
+}
+
+fn longest_word<'a>(word1: &'a str, word2: &'a str) -> &'a str {
+    if word1.len() > word2.len() {
+        word1
+    } else {
+        word2
+    }
 }
