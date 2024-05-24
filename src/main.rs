@@ -417,13 +417,11 @@ fn main() {
     }
 
     impl Hero {
-        pub fn builder() -> Self {
-            Self::default()
-        }
-
-        pub fn name(mut self, name: String) -> Self {
-            self.name = name;
-            self
+        pub fn builder(name: &str) -> Self {
+            Self {
+                name: name.into(),
+                ..Default::default()
+            }
         }
 
         pub fn nick(mut self, nick: String) -> Self {
@@ -437,9 +435,9 @@ fn main() {
         }
     }
 
-    let ubermensch = Hero::builder()
-        .name("Superman".into())
-        .nick("Clark Kent".into());
+    let ubermensch = Hero::builder("superman")
+        .nick("Clark Kent".into())
+        .active(false);
 
     println!("ubermensch {:?}", ubermensch);
     dbg!(ubermensch);
@@ -1020,6 +1018,8 @@ fn main() {
         n
     );
     (0..n).into_par_iter().for_each(|i| println!("{}", i));
+
+    ref_example();
 }
 
 // generic type
@@ -1544,7 +1544,7 @@ fn foobar(switch: bool) -> impl Summary<> {
 }
 */
 
-// alternative: uses Trait Object
+// alternative: use Trait Object
 fn foobar(switch: bool) -> Box<dyn Summary> {
     if switch {
         Box::new(FooSummary)
@@ -1637,5 +1637,24 @@ fn longest_word<'a>(word1: &'a str, word2: &'a str) -> &'a str {
         word1
     } else {
         word2
+    }
+}
+
+fn ref_example() {
+    let greet = String::from("hello");
+    let opt = Some(greet);
+
+    // greet gets moved into x, so the next let binding will fail
+    // if let Some(x) = opt {
+    //     println!("{x}");
+    // }
+
+    // this works since ref x just takes a reference to greet
+    if let Some(ref x) = opt {
+        println!("{x}");
+    }
+
+    if let Some(x) = opt {
+        println!("{x}");
     }
 }
