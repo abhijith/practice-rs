@@ -1725,7 +1725,7 @@ fn coool() {
 mod stateful {
     use std::collections::HashSet;
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub struct Node {
         pub name: String,
         pub children: Vec<Node>,
@@ -1808,12 +1808,12 @@ mod stateful {
 
         // two independent types
         #[derive(Default, Debug)]
-        struct Index {
+        pub struct Index {
             pub names: HashSet<String>,
         }
 
         #[derive(Default, Debug)]
-        struct Counter {
+        pub struct Counter {
             pub total: usize,
             pub leaves: usize,
         }
@@ -1960,6 +1960,80 @@ mod stateful {
             pub fn balanced(&self) -> bool {
                 false
             }
+        }
+    }
+
+    mod registry {
+        use super::{
+            visitor::{Counter, Index, Visitor},
+            Node,
+        };
+
+        fn dfs(node: &Node, visitors: &mut Vec<impl Visitor>) {
+            for visitor in visitors.iter_mut() {
+                visitor.process(node);
+            }
+
+            for child in &node.children {
+                dfs(child, visitors);
+            }
+        }
+
+        struct Registry {
+            node: Node,
+            visitors: Vec<Box<dyn Visitor>>,
+        }
+
+        #[derive(Default)]
+        struct RegistryBuilder {
+            visitors: Vec<Box<dyn Visitor>>,
+        }
+
+        impl RegistryBuilder {
+            fn new() -> Self {
+                RegistryBuilder::default()
+            }
+
+            fn visitor(mut self, visitor: Box<dyn Visitor>) -> Self {
+                self.visitors.push(visitor);
+                self
+            }
+
+            fn build(self, node: Node) -> Registry {
+                Registry {
+                    node,
+                    visitors: self.visitors,
+                }
+            }
+        }
+
+        fn dfs_with_registry(node: &Node, registry: &mut Registry) {
+            for visitor in registry.visitors.iter_mut() {
+                visitor.process(node);
+            }
+
+            for child in &node.children {
+                dfs_with_registry(child, registry);
+            }
+        }
+
+        #[derive(Debug)]
+        struct Printer;
+
+        impl Visitor for Printer {
+            fn process(&mut self, node: &Node) {
+                println!("{:#?}", node);
+            }
+        }
+
+        fn visit_all(node: Node) {
+            let mut rb = RegistryBuilder::new()
+                .visitor(Box::new(Printer))
+                .visitor(Box::new(Counter::default()))
+                .visitor(Box::new(Index::default()))
+                .build(node.clone());
+
+            dfs_with_registry(&node, &mut rb);
         }
     }
 }
