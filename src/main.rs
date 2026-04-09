@@ -1,13 +1,16 @@
 #![allow(dead_code, unused_variables)]
+#![forbid(unwrap_in_result)] // clippy
 
 pub(crate) use rayon::prelude::*;
 pub(crate) use std::{
-    cell::{Cell, RefCell},
     collections::{BinaryHeap, HashMap},
     fmt::Display,
-    fs::File,
     mem,
     ops::AddAssign,
+    sync::{
+        atomic::{AtomicI32, Ordering},
+        Mutex,
+    },
     thread,
     time::Duration,
 };
@@ -23,10 +26,18 @@ fn main() {
         FooPoint { x, .. } => println!("x is {}", x),
     }
 
+    // destructuring with tuples
     let numbers = (2, 4, 8, 16, 32);
-
     match numbers {
         (first, .., last) => {
+            println!("Some numbers: {}, {}", first, last);
+        }
+    }
+
+    // destructuring with array
+    let numbers = [2, 4, 8, 16, 32];
+    match numbers {
+        [first, .., last] => {
             println!("Some numbers: {}, {}", first, last);
         }
     }
@@ -409,15 +420,28 @@ fn main() {
         }
     }
 
-    #[derive(Debug, Default)]
+    #[derive(Debug)]
     struct Hero {
+        name: String,
+        nick: String,
+        status: Status,
+    }
+
+    #[derive(Debug, Default)]
+    struct HeroBuilder {
         name: String,
         nick: String,
         active: bool,
     }
 
-    impl Hero {
-        pub fn builder(name: &str) -> Self {
+    #[derive(Debug)]
+    enum Status {
+        Active,
+        Passive,
+    }
+
+    impl HeroBuilder {
+        pub fn new(name: &str) -> Self {
             Self {
                 name: name.into(),
                 ..Default::default()
@@ -433,11 +457,26 @@ fn main() {
             self.active = active;
             self
         }
+
+        pub fn build(self) -> Hero {
+            let status = if self.active {
+                Status::Active
+            } else {
+                Status::Passive
+            };
+
+            Hero {
+                name: self.name,
+                nick: self.nick,
+                status: status,
+            }
+        }
     }
 
-    let ubermensch = Hero::builder("superman")
+    let ubermensch = HeroBuilder::new("superman")
         .nick("Clark Kent".into())
-        .active(false);
+        .active(false)
+        .build();
 
     println!("ubermensch {:?}", ubermensch);
     dbg!(ubermensch);
@@ -572,10 +611,30 @@ fn main() {
         ANSWER_TO_LIFE, MONTHS
     );
 
+    /* no longer allowed in 2024 edition
     unsafe {
         GLOBAL_STATIC_MUT = 0;
         println!("global static mutable {}", GLOBAL_STATIC_MUT);
     }
+    */
+
+    // or equivalent
+
+    static mut GLOBAL_STATIC_MUT: i32 = 42;
+
+    unsafe {
+        let p = &raw mut GLOBAL_STATIC_MUT;
+        *p = 0;
+        println!("global static mutable {}", *p);
+    }
+
+    // alternatively for primitive types
+    static GLOBAL: AtomicI32 = AtomicI32::new(0);
+    GLOBAL.store(0, Ordering::Relaxed);
+    println!("global static mutable {}", GLOBAL.load(Ordering::Relaxed));
+
+    // or mutex
+    static GLOBAL_: Mutex<i32> = Mutex::new(0);
 
     // return type is ()
     // equivalent to fn cool() -> () { ... }
@@ -965,9 +1024,6 @@ fn main() {
 
     println!("boxed {} {:?}", b1, b2);
 
-    let cell = Cell::new(42);
-    let ref_cell = RefCell::new(42);
-
     match std::fs::read_to_string("/home/abhi/.gitconfig") {
         Ok(a) => println!("{:?}", a),
         Err(e) => println!("{}", e),
@@ -1020,6 +1076,8 @@ fn main() {
     (0..n).into_par_iter().for_each(|i| println!("{}", i));
 
     ref_example();
+
+    // phantom type
 }
 
 // generic type
@@ -1115,7 +1173,7 @@ fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
 }
 
 fn panik() -> () {
-    let f = File::open("hello");
+    let f = std::fs::File::open("hello");
 
     let f = match f {
         Ok(file) => file,
@@ -1656,5 +1714,252 @@ fn ref_example() {
 
     if let Some(x) = opt {
         println!("{x}");
+    }
+}
+
+fn coool() {
+    println!("hello eglot!");
+    ref_example();
+}
+
+mod stateful {
+    use std::collections::HashSet;
+
+    #[derive(Debug)]
+    pub struct Node {
+        pub name: String,
+        pub children: Vec<Node>,
+    }
+
+    mod closure {
+        pub fn run() {
+            let mut state = vec![];
+
+            // must be `mut` because closure mutates captured state (FnMut)
+            // FnMut is a type which encapsulates closure state and fn in a mutable way
+            let mut g = |n| {
+                for x in 1..n {
+                    state.push(x);
+                }
+            };
+
+            g(5);
+        }
+    }
+
+    mod var {
+        use super::*;
+
+        pub fn dfs(node: &Node, names: &mut HashSet<String>) {
+            names.insert(node.name.clone());
+
+            for child in &node.children {
+                dfs(child, names);
+            }
+        }
+    }
+
+    mod hof {
+        use super::*;
+
+        pub fn dfs<F>(node: &Node, f: &mut F)
+        where
+            F: FnMut(&Node),
+        {
+            f(node);
+
+            for child in &node.children {
+                dfs(child, f);
+            }
+        }
+
+        pub fn uniq_names(root: &Node) {
+            let mut names = HashSet::<String>::new();
+
+            let mut process = |node: &Node| {
+                names.insert(node.name.clone());
+            };
+
+            dfs(root, &mut process);
+        }
+    }
+
+    mod typed {
+        use super::*;
+
+        #[derive(Default, Debug)]
+        pub struct State {
+            pub names: HashSet<String>,
+            pub total: usize,
+        }
+
+        pub fn dfs(node: &Node, state: &mut State) {
+            state.names.insert(node.name.clone());
+            state.total += 1;
+
+            for child in &node.children {
+                dfs(child, state);
+            }
+        }
+    }
+
+    mod visitor {
+        use super::*;
+
+        // two independent types
+        #[derive(Default, Debug)]
+        struct Index {
+            pub names: HashSet<String>,
+        }
+
+        #[derive(Default, Debug)]
+        struct Counter {
+            pub total: usize,
+            pub leaves: usize,
+        }
+
+        // two independent types need different impls of dfs
+        fn dfs_names(node: &Node, state: &mut Index) {
+            state.names.insert(node.name.clone());
+
+            for child in &node.children {
+                dfs_names(child, state);
+            }
+        }
+
+        fn dfs_count(node: &Node, state: &mut Counter) {
+            if node.children.is_empty() {
+                state.leaves += 1;
+            }
+            state.total += 1;
+
+            for child in &node.children {
+                dfs_count(child, state);
+            }
+        }
+
+        pub trait Visitor {
+            fn process(&mut self, node: &Node);
+        }
+
+        // two independent types need different impls of dfs
+        // make it generic over _visitor_ type
+        fn dfs<V>(node: &Node, visitor: &mut V)
+        where
+            V: Visitor,
+        {
+            visitor.process(node);
+
+            for child in &node.children {
+                dfs(child, visitor);
+            }
+        }
+
+        impl Visitor for Index {
+            fn process(&mut self, node: &Node) {
+                self.names.insert(node.name.clone());
+            }
+        }
+
+        impl Visitor for Counter {
+            fn process(&mut self, node: &Node) {
+                if node.children.is_empty() {
+                    self.leaves += 1;
+                }
+                self.total += 1;
+            }
+        }
+    }
+
+    mod nodetype {
+        // make visitor generic over node type N
+        pub trait Visitor<N> {
+            fn process(&mut self, node: &N);
+        }
+
+        trait TreeLike: Sized {
+            fn children(&self) -> &[Self];
+        }
+
+        fn dfs<N, V>(node: &N, visitor: &mut V)
+        where
+            N: TreeLike,
+            V: Visitor<N>,
+        {
+            visitor.process(node);
+
+            for child in node.children() {
+                dfs(child, visitor);
+            }
+        }
+
+        #[derive(Debug)]
+        pub struct CoolNode {
+            pub name: String,
+            pub nick: String,
+            pub children: Vec<CoolNode>,
+        }
+
+        impl TreeLike for CoolNode {
+            fn children(&self) -> &[Self] {
+                &self.children
+            }
+        }
+    }
+
+    mod typestate {
+        // make visitor generic over node type N
+        pub trait Visitor<N> {
+            fn process(&mut self, node: &N);
+        }
+
+        trait TreeLike: Sized {
+            fn children(&self) -> &[Self];
+        }
+
+        fn dfs<N, V>(node: &N, visitor: &mut V)
+        where
+            N: TreeLike,
+            V: Visitor<N>,
+        {
+            visitor.process(node);
+
+            for child in node.children() {
+                dfs(child, visitor);
+            }
+        }
+
+        #[derive(Debug)]
+        pub struct Node<T> {
+            pub name: String,
+            pub children: Vec<Node<T>>,
+            _marker: std::marker::PhantomData<T>,
+        }
+
+        impl<T> TreeLike for Node<T> {
+            fn children(&self) -> &[Self] {
+                &self.children
+            }
+        }
+
+        struct Graph;
+        struct Tree;
+
+        type GraphNode = Node<Graph>;
+        type TreeNode = Node<Tree>;
+
+        impl GraphNode {
+            // only makes sense on Node in a Graph
+            pub fn has_cycle(&self) -> bool {
+                false
+            }
+        }
+
+        impl TreeNode {
+            // only makes sense on Node in a Tree
+            pub fn balanced(&self) -> bool {
+                false
+            }
+        }
     }
 }
