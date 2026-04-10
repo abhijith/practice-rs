@@ -1,5 +1,5 @@
 #![allow(dead_code, unused_variables)]
-#![forbid(unwrap_in_result)] // clippy
+#![forbid(clippy::unwrap_in_result)]
 
 pub(crate) use rayon::prelude::*;
 pub(crate) use std::{
@@ -468,7 +468,7 @@ fn main() {
             Hero {
                 name: self.name,
                 nick: self.nick,
-                status: status,
+                status,
             }
         }
     }
@@ -2053,4 +2053,27 @@ mod stateful {
             dfs_with_registry(&node, &mut rb);
         }
     }
+}
+
+fn combinators() {
+    let val = Some(1);
+    let f = |x| Some(x + 1);
+
+    // unpack and put it back in the container
+    let left = match val {
+        Some(x) => Some(f(x)),
+        None => None,
+    };
+    let right = val.map(f);
+
+    assert_eq!(left, right);
+
+    // unpack and do not put it back in the container
+    let left = match val {
+        Some(x) => f(x),
+        None => None,
+    };
+    let right = val.and_then(f);
+
+    assert_eq!(left, right);
 }
