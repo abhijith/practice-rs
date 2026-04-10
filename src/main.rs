@@ -1731,6 +1731,53 @@ mod stateful {
         pub children: Vec<Node>,
     }
 
+    pub trait Visitor<N> {
+        fn process(&mut self, node: &N);
+    }
+
+    trait TreeLike: Sized {
+        fn children(&self) -> &[Self];
+    }
+
+    impl TreeLike for Node {
+        fn children(&self) -> &[Self] {
+            &self.children
+        }
+    }
+
+    struct State {
+        n: usize,
+        names: Vec<String>,
+    }
+
+    impl Visitor<Node> for State {
+        fn process(&mut self, node: &Node) {
+            self.names.push(node.name.clone());
+        }
+    }
+
+    impl Node {
+        pub fn dfs(&self) {
+            let mut state = State {
+                n: 0,
+                names: vec![],
+            };
+            walk_pre(self, &mut state);
+        }
+    }
+
+    fn walk_pre<N, V>(node: &N, visitor: &mut V)
+    where
+        N: TreeLike,
+        V: Visitor<N>,
+    {
+        visitor.process(node);
+
+        for child in node.children() {
+            walk_pre(child, visitor);
+        }
+    }
+
     mod closure {
         pub fn run() {
             let mut state = vec![];
@@ -1929,6 +1976,7 @@ mod stateful {
             }
         }
 
+        // make node generic
         #[derive(Debug)]
         pub struct Node<T> {
             pub name: String,
