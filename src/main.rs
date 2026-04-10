@@ -2141,6 +2141,15 @@ mod debug {
     pub trait Cool: std::fmt::Debug {} // will work
 
     // for us to be able to have debug display functionality on Foo, we need to
+    impl Cool for Foo {}
 
-    dbg!(Foo::default());
+    fn f() {
+        println!(
+            "{:?}",
+            Foo {
+                a: "hello".into(),
+                b: vec![Box::new(Foo::default())]
+            }
+        );
+    }
 }
