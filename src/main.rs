@@ -2077,3 +2077,22 @@ fn combinators() {
 
     assert_eq!(left, right);
 }
+
+mod debug {
+    // problem: have debug display functionality on boxed type
+    #[derive(Debug, Default)]
+    struct Foo {
+        pub a: String,
+        pub b: Vec<Box<dyn Cool>>,
+    }
+
+    // dyn: type erasure keep bare minimum information unless specific by bounds
+
+    // pub trait Cool {}  // will not work
+
+    pub trait Cool: std::fmt::Debug {} // will work
+
+    // for us to be able to have debug display functionality on Foo, we need to
+
+    dbg!(Foo::default());
+}
