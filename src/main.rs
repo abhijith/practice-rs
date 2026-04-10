@@ -1736,7 +1736,7 @@ mod stateful {
             let mut state = vec![];
 
             // must be `mut` because closure mutates captured state (FnMut)
-            // FnMut is a type which encapsulates closure state and fn in a mutable way
+            // FnMut is a type which mutates closure state
             let mut g = |n| {
                 for x in 1..n {
                     state.push(x);
@@ -1969,13 +1969,13 @@ mod stateful {
             Node,
         };
 
-        fn dfs(node: &Node, visitors: &mut Vec<impl Visitor>) {
+        fn dfs_without_registry(node: &Node, visitors: &mut Vec<impl Visitor>) {
             for visitor in visitors.iter_mut() {
                 visitor.process(node);
             }
 
             for child in &node.children {
-                dfs(child, visitors);
+                dfs_without_registry(child, visitors);
             }
         }
 
@@ -1996,6 +1996,15 @@ mod stateful {
 
             fn visitor(mut self, visitor: Box<dyn Visitor>) -> Self {
                 self.visitors.push(visitor);
+                self
+            }
+
+            // interface cleanup: without boxed value being passed in
+            fn add_visitor<V>(mut self, visitor: V) -> Self
+            where
+                V: Visitor + 'static,
+            {
+                self.visitors.push(Box::new(visitor));
                 self
             }
 
@@ -2031,6 +2040,14 @@ mod stateful {
                 .visitor(Box::new(Printer))
                 .visitor(Box::new(Counter::default()))
                 .visitor(Box::new(Index::default()))
+                .build(node.clone());
+
+            dfs_with_registry(&node, &mut rb);
+
+            let mut rb = RegistryBuilder::new()
+                .add_visitor(Printer)
+                .add_visitor(Counter::default())
+                .add_visitor(Index::default())
                 .build(node.clone());
 
             dfs_with_registry(&node, &mut rb);
