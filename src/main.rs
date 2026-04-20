@@ -2153,3 +2153,9 @@ mod debug {
         );
     }
 }
+
+fn matches() {
+    let inner = 10;
+    let val = Some(inner);
+    assert!(matches!(val, Some(x) if x > 2));
+}
